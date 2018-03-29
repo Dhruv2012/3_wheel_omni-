@@ -155,7 +155,7 @@ void loop() {
       }
       if(Stopflag==0){  
          if(frontpressed)
-          calcRPM(omegaControl*rpmrotate,270,rpmmax,pwheel);          
+          calcRPM(omegaControl*rpmrotate,267,rpmmax,pwheel);          
          else if(backpressed)
           calcRPM(omegaControl*rpmrotate,90,rpmmax,pwheel);          
          else
