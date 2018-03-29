@@ -1,6 +1,7 @@
 void initIrSensor(){
   pinMode (TriggerPin, INPUT); 
   pinMode (EchoPin, INPUT);
+  pinMode (MechIr,INPUT);
 }
 
 void initThrowing(){

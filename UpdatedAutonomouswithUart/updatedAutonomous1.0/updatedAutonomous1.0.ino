@@ -7,9 +7,9 @@
 #include <Adafruit_MCP4725.h>
 #define PiSerial Serial1
 
-const int dacTZ3=940;//1000
-const int dacTZ2=720;
-const int dacTZ1=570;
+const int dacTZ3=910;//990;//1000
+const int dacTZ2=710;//765;
+const int dacTZ1=550;//590;
 const int rotateRPM=120;
 
 Adafruit_MCP4725 dac;
@@ -109,11 +109,12 @@ const float pi = 3.1415;
 const int anglea = 90;
 const int angleb = 210;
 const int anglec = 330;
-const int RPMMAX = 400;
+const int RPMMAX = 550;
 //const int alignrpm=210;
 const int alignrpm=240;
 const int TriggerPin=9;
 const int EchoPin=8;
+const int MechIr=4;
 const int ThrowLed=47; 
 const int CamLed=51;
 const int ThrowPin = 43;
@@ -127,7 +128,7 @@ const int PWMpin=12;
 const int LimitLpin=7;
 const int LimitRpin=5; 
 const int reloadLiftpin=53;
-const int MechanismRPM=100;
+const int MechanismRPM=65;
 /**********************************************************************************************************************************/
 int maxcolor=0;
 /**********************************************************************************************************************************/
@@ -143,6 +144,7 @@ int posindex=0;
 int ActiveLineSensor, ActiveOmegaSensor, PerpendicularLineSensor;
 float Linecontrol=0, Omegacontrol=0;
 
+int MaxAlignTime=8;
 float pwmfact=1.2;
 float pwmfact1=3;
 
@@ -244,10 +246,12 @@ void setup() {
 //  ActiveLineSensor=dir;
 //  ActiveOmegaSensor=rdir;
 //  PerpendicularLineSensor= pdir;
+  int resetflag=0;
   maxcolor=3;
-  if(TimedchechIr(5,1)){
+  if(TimedchechIr(TriggerPin,5,1)){
     maxcolor=5;
     digitalWrite(CamLed,HIGH);
+    resetflag=1;
   }
   if(REDBOXSetup){
     while(abs(GetLSAReading(LSAArray[r]->OePin))>25){
@@ -287,10 +291,14 @@ void setup() {
  pos[0]=0;
  pos[1]=0;
  LoadBot();
-  
+ if(resetflag){
+   pwmfact=1.5;
+   pwmfact1=5.2;
+   }
  }
       
 void loop(){
+    //Serial.println(digitalRead(MechIr));
     if(Serial.available()>0)if(Serial.read()=='a')(ThrowShuttleCock(5));
     transmit = false;
     //Serial.println("forward:"+String(GetLSAReading(LSAArray[l]->OePin))+String(digitalRead(LSAArray[l]->JunctionPin)));//+"right:"+String(GetLSAReading(LSAArray[r]->OePin))+String(LSAArray[r]->JunctionPin)+"left:"+String(GetLSAReading(LSAArray[l]->OePin))+String(LSAArray[l]->JunctionPin)+"forward:"+String(GetLSAReading(LSAArray[b]->OePin))+String(LSAArray[b]->JunctionPin));
@@ -383,7 +391,8 @@ void loop(){
                     {
                           //commented out throw complete flag everywhere its redundant
                           digitalWrite(CamLed,HIGH);
-                          chechIr(50);
+                          chechIr(30);
+                          //chechIr(50);
                           //delay(1000);
                           int location;
                           
@@ -411,7 +420,7 @@ void loop(){
         else if(arr[pos[0]][pos[1]][posindex+1]==4)
           calcRPM(-Omegacontrol,LSAArray[ActiveLineSensor]->Theta-Linecontrol,rpmmax/pwmfact,pwheel);
         else if(arr[pos[0]][pos[1]][posindex+1]!=dir)
-          calcRPM(-Omegacontrol,LSAArray[ActiveLineSensor]->Theta-Linecontrol,rpmmax/1.4,pwheel);
+          calcRPM(-Omegacontrol,LSAArray[ActiveLineSensor]->Theta-Linecontrol,rpmmax/1.9,pwheel);
         else if(arr[pos[0]][pos[1]][posindex]!=4)
           calcRPM(-Omegacontrol,LSAArray[ActiveLineSensor]->Theta-Linecontrol,rpmmax,pwheel);
         if(Dirchange==1){
@@ -448,7 +457,7 @@ void loop(){
     if(CheckIrflag){
       if(!digitalRead(TriggerPin))
         Ircounter++;
-      if(Ircounter>20){
+      if(Ircounter>10){
         Ircounter=0;
         CheckIrflag=0;
         }

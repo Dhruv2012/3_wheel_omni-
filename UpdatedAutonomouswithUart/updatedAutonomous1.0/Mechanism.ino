@@ -38,7 +38,7 @@ int newMech(){
   digitalWrite(Motordir2pin,HIGH);
   timerIr=millis();
   while(1){
-    if(millis()-timerIr>5000)
+    if(millis()-timerIr>4000)
       return 0;
     //Serial.println(digitalRead(TriggerPin));  
     if(!digitalRead(TriggerPin))

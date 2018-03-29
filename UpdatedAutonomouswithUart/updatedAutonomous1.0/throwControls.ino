@@ -1,5 +1,5 @@
 void  ThrowShuttleCock(int pos){
-   if(TimedchechIr(20,2.5)){
+   if(TimedchechIr(TriggerPin,20,2)){
        digitalWrite(ThrowLed,HIGH);
        delay(1000);
        digitalWrite(ThrowPin,HIGH);
@@ -9,7 +9,11 @@ void  ThrowShuttleCock(int pos){
        digitalWrite(ThrowLed,LOW);
    }
        if(pos==5){
-          int throwagain=newMech();
+         int throwagain=0;
+         if(TimedchechIr(MechIr,2,1))         
+          throwagain=newMech();
+         else
+          throwagain=0;    
          if(throwagain==1){
              Serial.println("I am here");
              digitalWrite(ThrowLed,HIGH);
@@ -24,15 +28,15 @@ void  ThrowShuttleCock(int pos){
    
    //delay(1000);
 }
-bool TimedchechIr(int cntr,float TimeInSec){
+bool TimedchechIr(int pin,int cntr,float TimeInSec){
   long int timerIr=0;
   timerIr=millis();
   while(1){
-    if(!digitalRead(TriggerPin))
+    if(!digitalRead(pin))
       Ircounter++;
     else
       Ircounter=0;
-    //Serial.println("IRCounter:"+String(Ircounter));  
+    //Serial.println(String(pin)+"IRCounter:"+String(Ircounter));  
     if(millis()-timerIr>TimeInSec*1000)
     {
       Ircounter=0;
@@ -72,8 +76,9 @@ int CheckBall(){
   else return 0;
 }
 void LoadBot(){
-   pwmfact=1.5;
-   pwmfact1=4;
+   MaxAlignTime=5;
+   pwmfact=1.9;
+   pwmfact1=4.8;
    PiSerial.flush();
    int LoadPos;
    if(pos[1]==3 || pos[1]==0)
@@ -103,19 +108,22 @@ void LoadBot(){
 }
 
 void NextThrowCycle(int posx){
-    pwmfact=1.2;
-    pwmfact1=4; 
+    pwmfact=1.6;
+    pwmfact1=4.8; 
     int LoadPos=2;
     pos[0]=pos[1];
     pos[1]=posx;
     if(pos[1]==3){
       DACcounter=dacTZ1;
+      MaxAlignTime=5;
       }
     else if(pos[1]==4){
       DACcounter=dacTZ2;
+      MaxAlignTime=5;
       }
     else if(pos[1]==5){
       DACcounter=dacTZ3;
+      MaxAlignTime=8;
       }
    dac.setVoltage(DACcounter, false);  
    
@@ -138,8 +146,9 @@ void NextThrowCycle(int posx){
    //Throwcomplete=0;
 }
 void ReLoadBot(){
-   pwmfact=1.5;
-   pwmfact1=4; 
+   MaxAlignTime=5;
+   pwmfact=1.9;
+   pwmfact1=4.8; 
    int LoadPos,temp=0;
    
    if(pos[0]==1&&pos[1]==3)

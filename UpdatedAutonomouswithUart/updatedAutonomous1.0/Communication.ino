@@ -23,7 +23,7 @@ void TransmitURPM(wheel ** whee)
         {
          if(whee[y]->rpm>RPMMAX)whee[y]->rpm=RPMMAX;
          if(whee[y]->rpm<-RPMMAX)whee[y]->rpm=-RPMMAX; 
-         int temp = ((int)whee[y]->rpm+400);
+         int temp = ((int)whee[y]->rpm);//+400);
          mydata.rpm[y]=temp;        
         }
   //send the data

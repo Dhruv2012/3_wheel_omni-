@@ -141,7 +141,7 @@ void loop() {
 void Timerhandler() {
   
   if (flag == 1) {
-    //Serial.println("A:"+String(pMotorgain[0]->required)+"B:"+String(pMotorgain[1]->required)+"C:"+String(pMotorgain[2]->required));
+    Serial.println("A:"+String(pMotorgain[0]->required)+"B:"+String(pMotorgain[1]->required)+"C:"+String(pMotorgain[2]->required));
     encoderA->Rpm = ((encoderA->Count - encoderA->previousCount) * 60.0) / (Time * GearRatio * encoderA->Ppr);
     encoderB->Rpm = ((encoderB->Count - encoderB->previousCount) * 60.0) / (Time * GearRatio * encoderB->Ppr); //Why do we need previous count....
     encoderC->Rpm = ((encoderC->Count - encoderC->previousCount) * 60.0) / (Time * GearRatio * encoderC->Ppr);
@@ -244,9 +244,9 @@ void getUData(){
     pMotorgain[0]->Prevrequired = pMotorgain[0]->required;
     pMotorgain[1]->Prevrequired = pMotorgain[1]->required;
     pMotorgain[2]->Prevrequired = pMotorgain[2]->required;
-    pMotorgain[0]->required=mydata.rpm[0]-400;
-    pMotorgain[1]->required=mydata.rpm[1]-400;
-    pMotorgain[2]->required=mydata.rpm[2]-400;
+    pMotorgain[0]->required=mydata.rpm[0];//-400;
+    pMotorgain[1]->required=mydata.rpm[1];//-400;
+    pMotorgain[2]->required=mydata.rpm[2];//-400;
     digitalWrite(13, LOW);
   }
 }
